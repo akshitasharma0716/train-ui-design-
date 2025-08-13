@@ -1,0 +1,275 @@
+<!--
+TrainBookingPrototype - Single-file responsive prototype
+How to use:
+1. Save this file as `index.html`.
+2. Open in a browser to use the clickable prototype.
+3. To publish on GitHub:
+   - Create a new repository (e.g., train-booking-prototype).
+   - Upload this index.html to the repo root.
+   - In repo settings enable GitHub Pages (branch: main, folder: /) to host the prototype.
+
+This single-file prototype includes:
+- Home screen with search and popular destinations
+- Search results (list of trains, filters)
+- Booking screen with passenger summary
+- Payment screen (mock) with selectable payment options
+- Minimal, modern UI (blue-white palette), responsive and mobile-first
+-->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Train Ticket Booking - Prototype</title>
+  <style>
+    :root{
+      --bg:#f7fbff; --card:#ffffff; --primary:#0b66ff; --muted:#6b7280; --glass: rgba(11,102,255,0.06);
+      --radius:14px; --gap:16px; --maxw:900px;
+    }
+    *{box-sizing:border-box;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#f7fbff 0%, #ffffff 100%);color:#0f1724}
+    .app{max-width:var(--maxw);margin:24px auto;padding:18px}
+    header{display:flex;align-items:center;gap:12px}
+    .logo{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--primary),#4aa3ff);display:flex;align-items:center;justify-content:center;color:white;font-weight:700}
+    h1{font-size:18px;margin:0}
+    p.lead{margin:4px 0 18px;color:var(--muted);font-size:13px}
+
+    /* Card */
+    .card{background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:0 6px 18px rgba(15,23,36,0.06);}
+
+    /* Search */
+    .searchRow{display:flex;gap:10px;align-items:center}
+    .searchInput{flex:1;background:var(--glass);border:none;padding:12px;border-radius:12px}
+    .btn{background:var(--primary);color:white;padding:10px 14px;border-radius:12px;border:none;font-weight:600}
+
+    /* Popular destinations */
+    .chips{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+    .chip{padding:10px 12px;background:#eef6ff;border-radius:999px;color:var(--primary);cursor:pointer}
+
+    /* Screens */
+    .screen{display:none;margin-top:18px}
+    .screen.active{display:block}
+
+    /* Results list */
+    .train{display:flex;justify-content:space-between;align-items:center;padding:12px;border-radius:12px;margin-bottom:10px;background:linear-gradient(180deg,#ffffff,#fbfcff);border:1px solid rgba(11,102,255,0.06)}
+    .train .left{display:flex;flex-direction:column}
+    .train .title{font-weight:700}
+    .train .meta{color:var(--muted);font-size:13px}
+    .price{font-weight:800;color:var(--primary)}
+    .small{font-size:13px;color:var(--muted)}
+
+    /* Booking & Payment */
+    .field{margin-bottom:12px}
+    input[type=text],input[type=number]{width:100%;padding:10px;border-radius:8px;border:1px solid #e6edf8}
+    .row{display:flex;gap:12px}
+    .col{flex:1}
+
+    footer{margin-top:22px;text-align:center;color:var(--muted);font-size:13px}
+
+    /* Responsive */
+    @media(min-width:720px){.app{padding:28px}}
+
+    /* Micro interactions */
+    .linkbtn{background:transparent;border:1px solid rgba(11,102,255,0.12);padding:8px 10px;border-radius:9px;color:var(--primary);cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="logo">TB</div>
+      <div>
+        <h1>TrainBook — Prototype</h1>
+        <p class="lead"></p>
+      </div>
+    </header>
+
+    <!-- HOME SCREEN -->
+    <section id="home" class="screen active">
+      <div class="card">
+        <div class="searchRow">
+          <input id="from" class="searchInput" placeholder="From: e.g., New Delhi" />
+          <input id="to" class="searchInput" placeholder="To: e.g., Mumbai" />
+          <button id="searchBtn" class="btn">Search</button>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+          <div class="small">Popular destinations</div>
+          <button id="exploreBtn" class="linkbtn">Explore</button>
+        </div>
+        <div class="chips" style="margin-top:10px">
+          <div class="chip" data-from="New Delhi" data-to="Mumbai">Delhi → Mumbai</div>
+          <div class="chip" data-from="Mumbai" data-to="Goa">Mumbai → Goa</div>
+          <div class="chip" data-from="Kolkata" data-to="Bengaluru">Kolkata → Bengaluru</div>
+          <div class="chip" data-from="Chennai" data-to="Hyderabad">Chennai → Hyderabad</div>
+        </div>
+      </div>
+
+      <div style="height:12px"></div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div style="font-weight:700">Recent bookings</div>
+          <div class="small">Tap to reuse</div>
+        </div>
+        <div style="display:flex;gap:10px;overflow:auto;padding-bottom:6px">
+          <div class="card" style="min-width:200px;padding:12px;border-radius:12px;display:flex;flex-direction:column;gap:6px;">
+            <div style="font-weight:700">Pune → Mumbai</div>
+            <div class="small">12 Jul 2025 • AC Chair</div>
+            <button class="linkbtn" onclick="useRecent('Pune','Mumbai')">Reuse</button>
+          </div>
+          <div class="card" style="min-width:200px;padding:12px;border-radius:12px;display:flex;flex-direction:column;gap:6px;">
+            <div style="font-weight:700">Delhi → Agra</div>
+            <div class="small">05 Aug 2025 • Sleeper</div>
+            <button class="linkbtn" onclick="useRecent('New Delhi','Agra')">Reuse</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS SCREEN -->
+    <section id="results" class="screen">
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px">
+        <button class="linkbtn" onclick="go('home')">◀ Back</button>
+        <div style="font-weight:800">Select a train</div>
+        <div style="margin-left:auto" id="routeSummary" class="small"></div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div>
+            <div class="small">Filters</div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button class="linkbtn" onclick="applyFilter('AC')">AC</button>
+              <button class="linkbtn" onclick="applyFilter('Sleeper')">Sleeper</button>
+              <button class="linkbtn" onclick="applyFilter('Morning')">Morning</button>
+            </div>
+          </div>
+          <div>
+            <div class="small">Sort</div>
+            <select id="sortSel" onchange="renderTrains()">
+              <option value="price">Price</option>
+              <option value="time">Duration</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="trainsList"></div>
+      </div>
+    </section>
+
+    <!-- BOOKING SCREEN -->
+    <section id="booking" class="screen">
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px">
+        <button class="linkbtn" onclick="go('results')">◀ Back</button>
+        <div style="font-weight:800">Booking Details</div>
+      </div>
+
+      <div class="card">
+        <div id="selectedTrain" style="margin-bottom:12px"></div>
+        <div class="field">
+          <label class="small">Passenger name</label>
+          <input id="pname" type="text" placeholder="Full name" />
+        </div>
+        <div class="row">
+          <div class="col field">
+            <label class="small">Age</label>
+            <input id="page" type="number" placeholder="e.g., 26" />
+          </div>
+          <div class="col field">
+            <label class="small">Coach/Class</label>
+            <select id="pclass">
+              <option>AC Chair</option>
+              <option>Sleeper</option>
+              <option>AC 3-Tier</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+          <div class="small">Total</div>
+          <div style="font-weight:800" id="totalPrice">₹0</div>
+        </div>
+        <div style="height:12px"></div>
+        <button class="btn" onclick="toPayment()">Proceed to Payment</button>
+      </div>
+    </section>
+
+    <!-- PAYMENT SCREEN -->
+    <section id="payment" class="screen">
+      <div style="display:flex;gap:12px;align-items:center;margin-bottom:12px">
+        <button class="linkbtn" onclick="go('booking')">◀ Back</button>
+        <div style="font-weight:800">Payment</div>
+      </div>
+
+      <div class="card">
+        <div style="margin-bottom:10px"><strong>Payable:</strong> <span id="payableAmount">₹0</span></div>
+        <div class="field">
+          <label class="small">Choose payment method</label>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="linkbtn" onclick="selectPay('card')">Card</button>
+            <button class="linkbtn" onclick="selectPay('upi')">UPI</button>
+            <button class="linkbtn" onclick="selectPay('netbank')">Netbanking</button>
+          </div>
+        </div>
+        <div id="payForm" style="margin-top:12px"></div>
+
+        <div style="height:12px"></div>
+        <button class="btn" onclick="completePayment()">Pay Now</button>
+      </div>
+    </section>
+
+    <footer>BOOK MY TRAIN </footer>
+  </div>
+
+  <script>
+    // Mock trains dataset
+    const MOCK = [
+      {id:1,name:'Shiv Shakti Express',from:'New Delhi',to:'Mumbai',time:'08:30 - 20:15',dur:11.75,cls:'AC Chair',price:1299},
+      {id:2,name:'Coastal Queen',from:'Mumbai',to:'Goa',time:'06:00 - 11:30',dur:5.5,cls:'AC 3-Tier',price:799},
+      {id:3,name:'Bengal Link',from:'Kolkata',to:'Bengaluru',time:'21:00 - 10:00',dur:13,cls:'Sleeper',price:999},
+      {id:4,name:'Southern Star',from:'Chennai',to:'Hyderabad',time:'05:00 - 11:00',dur:6,cls:'AC Chair',price:699}
+    ];
+
+    let state = {from:'',to:'',selected:null,filter:null,sort:'price'};
+
+    // Navigation helper
+    function go(screen){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(screen).classList.add('active');window.scrollTo(0,0)}
+
+    // Use chips/recent
+    document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',e=>{document.getElementById('from').value=c.dataset.from;document.getElementById('to').value=c.dataset.to;}));
+    function useRecent(a,b){document.getElementById('from').value=a;document.getElementById('to').value=b;}
+
+    document.getElementById('searchBtn').addEventListener('click',()=>{
+      const f=document.getElementById('from').value.trim();const t=document.getElementById('to').value.trim();
+      if(!f||!t){alert('Please enter both From and To');return}
+      state.from=f;state.to=t;state.filter=null;renderTrains();document.getElementById('routeSummary').innerText=f+' → '+t;go('results');
+    });
+
+    function applyFilter(f){state.filter=f;renderTrains();}
+    function renderTrains(){
+      const list=document.getElementById('trainsList');list.innerHTML='';
+      const sortBy=document.getElementById('sortSel').value;state.sort=sortBy;
+      let items = MOCK.filter(x=> (x.from.toLowerCase().includes(state.from.toLowerCase())||x.to.toLowerCase().includes(state.to.toLowerCase())||!state.from&&!state.to));
+      if(state.filter) items = items.filter(i=>i.cls.includes(state.filter)||i.name.includes(state.filter));
+      if(sortBy==='price') items.sort((a,b)=>a.price-b.price); else items.sort((a,b)=>a.dur-b.dur);
+      if(items.length===0){list.innerHTML='<div class="small">No trains found for these stations. Try exploring popular destinations.</div>';return}
+      items.forEach(tr=>{
+        const el=document.createElement('div');el.className='train';
+        el.innerHTML = `<div class="left"><div class="title">${tr.name}</div><div class="meta">${tr.from} → ${tr.to} • ${tr.time} • ${tr.cls}</div></div><div style="text-align:right"><div class="price">₹${tr.price}</div><div style="height:6px"></div><button class="linkbtn" onclick='selectTrain(${tr.id})'>Select</button></div>`;
+        list.appendChild(el);
+      });
+    }
+
+    function selectTrain(id){state.selected = MOCK.find(m=>m.id===id);document.getElementById('selectedTrain').innerHTML = `<div style="font-weight:800">${state.selected.name}</div><div class="small">${state.selected.from} → ${state.selected.to} • ${state.selected.time}</div>`;document.getElementById('totalPrice').innerText = '₹'+state.selected.price;go('booking');}
+
+    function toPayment(){const name=document.getElementById('pname').value.trim();if(!name){alert('Enter passenger name');return}const age=document.getElementById('page').value||'--';const cls=document.getElementById('pclass').value;document.getElementById('payableAmount').innerText = document.getElementById('totalPrice').innerText;go('payment');}
+
+    function selectPay(m){const pf=document.getElementById('payForm');if(m==='card'){pf.innerHTML=`<div class="field"><input placeholder="Card number"/></div><div class="row"><input class="col" placeholder="MM/YY"/><input class="col" placeholder="CVV"/></div>`}
+      if(m==='upi'){pf.innerHTML=`<div class="field"><input placeholder="UPI ID (example@bank)"/></div>`}
+      if(m==='netbank'){pf.innerHTML=`<div class="field"><select><option>HDFC</option><option>ICICI</option><option>State Bank</option></select></div>`}
+    }
+    function completePayment(){alert('Payment simulated — Booking Confirmed!\n(Prototype only)');go('home');}
+
+    // init
+    renderTrains();
+  </script>
+</body>
+</html>
